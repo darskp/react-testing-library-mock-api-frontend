@@ -3,43 +3,21 @@ import '../styles/booklist.css';
 import { useNavigate, useLocation } from "react-router-dom";
 import remove from '../../src/images/remove32.png'
 import edit from '../../src/images/edit.png'
+import axios from "axios";
 
 const Booklist = () => {
     let location = useLocation();
     let navigate = useNavigate();
-    let [books, setBooks] = useState([
-        {
-            id: 1,
-            title: 'Book 1',
-            authors: 'Author 1',
-            categories: 'Category 1',
-            pageCount: 200,
-            shortDescription: 'Short description for Book 1',
-            thumbnailUrl: 'https://example.com/book1.jpg',
-        },
-        {
-            id: 2,
-            title: 'Book 2',
-            authors: 'Author 2',
-            categories: 'Category 2',
-            pageCount: 300,
-            shortDescription: 'Short description for Book 2',
-            thumbnailUrl: 'https://example.com/book2.jpg',
-        },
-        // Add more dummy data as needed
-    ]);
+    let [books, setBooks] = useState([]);
 
 
-    // useEffect(() => {
-    //     let fetchData = async () => {
-    //         let response = await fetch('http://localhost:3000/books');
-    //         // let response = await fetch('https://darskp.github.io/books-json/books.json');
-    //         let data = await response.json();
-    //         // console.log(data);
-    //         setBooks(data);
-    //     }
-    //     fetchData();
-    // }, [books]);
+    useEffect(() => {
+        let fetchData = async () => {
+            let data = await axios.get('http://localhost:7000/getbooks');
+            setBooks(data.data);
+        }
+        fetchData();
+    }, [books]);
 
 
 
