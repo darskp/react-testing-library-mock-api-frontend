@@ -9,15 +9,15 @@ const Booklist = ({ setIsedit }) => {
     let navigate = useNavigate();
     let [books, setBooks] = useState([]);
 
+    let fetchData = async () => {
+        await axios.get('http://localhost:7000/getbooks')
+            .then((data) => setBooks(data.data))
+            .catch(() => console.log("fetching error"))
+    }
 
     useEffect(() => {
-        let fetchData = async () => {
-            await axios.get('http://localhost:7000/getbooks')
-                .then((data) => setBooks(data.data))
-                .catch(() => console.log("fetching error"))
-        }
         fetchData();
-    }, [books]);
+    }, []);
 
     let readmore = (id) => {
         if (id) {
@@ -28,6 +28,7 @@ const Booklist = ({ setIsedit }) => {
         try {
             await axios.delete(`http://localhost:7000/removebook/${id}`);
             alert(`${title} has been deleted permanently`);
+            fetchData();
         } catch (error) {
             console.error('Error deleting book:', error);
         }

@@ -17,6 +17,9 @@
 .readbook .bookcard .bookimage {
     display: block;
 }
+.rightCards{
+display: flex;
+}
 
 .readbook .readbookinfo {
     margin-right: 50px;

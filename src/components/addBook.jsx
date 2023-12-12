@@ -6,6 +6,7 @@ import axios from 'axios';
 
 const Addbooks = ({ isEdit, setIsedit }) => {
     let params = useParams();
+    const id = params?.id
     let navigate = useNavigate();
     let [title, setTitle] = useState('');
     let [authors, setAuthors] = useState('');
@@ -20,13 +21,15 @@ const Addbooks = ({ isEdit, setIsedit }) => {
         try {
             const response = await axios.post('http://localhost:7000/addbook/', bookdata, {
                 headers: {
-                    'Content-Type': 'application/json',
+                    "Content-Type": "application/json",
+                    "Access-Control-Allow-Origin": "*",
                 },
             });
+            console.log("Book data", bookdata,response);
             if (response?.data) {
                 console.log("Book data", bookdata);
-                alert(response.message);
-                navigate('/book-list');
+                alert(response.data.message);
+                navigate('/books');
             } else {
                 console.error('Failed to add book data');
             }
@@ -38,18 +41,25 @@ const Addbooks = ({ isEdit, setIsedit }) => {
 
     let handleUpdate = async (e) => {
         e.preventDefault();
-        let bookdata = { title, authors, categories, pageCount, shortDescription, thumbnailUrl };
+        let formData = new FormData();
+        formData.append("tittle", title);
+        formData.append("authors", authors);
+        formData.append("categories", categories);
+        formData.append("pageCount", pageCount);
+        formData.append("shortDescription", shortDescription);
+        formData.append("thumbnailUrl", thumbnailUrl);
         try {
-            const response = await axios.put(`http://localhost:7000/updatebook/${id}`, bookdata, {
+            const response = await axios.put(`http://localhost:7000/updatebook/${id}`, formData, {
                 headers: {
-                    'Content-Type': 'application/json',
+                    "Content-Type": "application/json",
+                    "Access-Control-Allow-Origin": "*",
                 },
             });
             if (response?.data) {
-                console.log("Book data", bookdata);
-                alert(response.message);
+                console.log("Book data", formData);
+                alert(response.data.message);
                 setIsedit(false);
-                navigate('/book-list');
+                navigate('/books');
             } else {
                 console.error('Failed to add book data');
             }
@@ -57,23 +67,22 @@ const Addbooks = ({ isEdit, setIsedit }) => {
             console.error('Error:', error);
         }
     }
-
+    let fetchData = async () => {
+        await axios.get(`http://localhost:7000/getbooks/${id}`)
+            .then((dat) => {
+                let { data } = dat;
+                setTitle(data.title)
+                setAuthors(data.authors)
+                setCategories(data.categories)
+                setPageCount(data.pageCount)
+                setShortDescription(data.shortDescription)
+                setThumbnailUrl(data.thumbnailUrl)
+            })
+            .catch(() => console.log("fetching error"))
+    }
     useEffect(() => {
-        let fetchData = async (id) => {
-            await axios.get(`http://localhost:7000/getbooks/${id}`)
-                .then((dat) => {
-                    let {data}=dat;
-                    setTitle(data.title)
-                    setAuthors(data.authors)
-                    setCategories(data.categories)
-                    setPageCount(data.pageCount)
-                    setShortDescription(data.shortDescription)
-                    setThumbnailUrl(data.thumbnailUrl)
-                })
-                .catch(() => console.log("fetching error"))
-        }
-        if(isEdit){
-            fetchData(params.id);
+        if (isEdit) {
+            fetchData();     
         }
     }, [isEdit]);
 
@@ -87,7 +96,7 @@ const Addbooks = ({ isEdit, setIsedit }) => {
                         <img src={hero} className="heroimg" alt="hero-img" />
                     </div>
                     <div className="form">
-                        <form onSubmit={!isEdit? handlesubmit : handleUpdate}>
+                        <form onSubmit={!isEdit ? handlesubmit : handleUpdate}>
                             <div className="title-add">
                                 <input value={title} onChange={e => setTitle(e.target.value)} required type="text" placeholder="Enter the title" />
                             </div>

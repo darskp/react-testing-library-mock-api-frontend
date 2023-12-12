@@ -5,20 +5,19 @@ import Navbar from './components/navbar';
 import Booklist from './components/booklist.jsx';
 import Readbooks from './components/readbook.jsx';
 import { useState } from 'react';
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom/dist/index.js';
 
 function App() {
-  const [isEdit, setIsedit] = useState(false)
-
+  const [isEdit, setIsedit] = useState(false);
   return (
     <div className="App">
       <BrowserRouter>
-        <Navbar />
+        <Navbar setIsedit={setIsedit}/>
         <Routes>
           <Route path="/books" element={<Booklist setIsedit={setIsedit} />} />
           <Route path="/books/:id" element={<Readbooks />} />
-          {isEdit ? <Route path="/editbook/:id" element={<Addbooks isEdit={true} setIsedit={setIsedit} />} />
-            : <Route path="/addbook" element={<Addbooks isEdit={false} setIsedit={setIsedit} />} />
-          }
+          <Route path={isEdit ? "/editbook/:id" : "/addbook"} element={<Addbooks isEdit={isEdit} setIsedit={setIsedit} />} />
         </Routes>
       </BrowserRouter>
     </div>

@@ -23,7 +23,7 @@ const Readbooks = () => {
                         <div className="bookimage">
                             <img src={book.thumbnailUrl} title={book.title} alt={book.title} />
                         </div>
-                        <div className="bookcardinfo">
+                        <div className="bookcardinfo rightCards">
                             <div className="bookscardinfo-no-btns readbookinfo">
                                 <div className="booktitle">
                                     <h2 title={book.title}><strong>{book.title}</strong></h2>
