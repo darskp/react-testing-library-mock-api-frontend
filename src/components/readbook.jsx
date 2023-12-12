@@ -1,32 +1,23 @@
 import { useParams } from "react-router-dom";
 import '../styles/readbook.css';
 import { useEffect, useState } from "react";
+import axios from "axios";
 const Readbooks = () => {
     let params = useParams();
-    let [book, setBook] = useState({
-        id: 1,
-        title: 'Book 1',
-        authors: 'Author 1',
-        categories: 'Category 1',
-        pageCount: 200,
-        shortDescription: 'Short description for Book 1',
-        thumbnailUrl: 'https://example.com/book1.jpg',
-    });
+    let [book, setBook] = useState({});
 
-    // useEffect(() => {
-    //     let fetchData = async () => {
-    //         let response = await fetch(`http://localhost:3000/books/${params.id}`);
-    //         let data = await response.json();
-    //         setBook(data);
-    //     }
-    //     fetchData();
-    // }, [])
-
+    useEffect(() => {
+        let fetchData = async () => {
+            await axios.get(`http://localhost:7000/getbooks/${params.id}`)
+                .then((data) => setBook(data.data))
+                .catch(() => console.log("fetching error"))
+        }
+        fetchData();
+    }, []);
 
     return (
         <div className="readbook" style={{display:"flex",justifyContent:"center",marginTop:"50px"}}>
             <div className="main addmain">
-                {/* <h1>&nbsp;</h1> */}
                 <div className="section">
                     <div className="bookcard">
                         <div className="bookimage">

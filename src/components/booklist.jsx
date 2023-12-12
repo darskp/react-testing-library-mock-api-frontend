@@ -13,13 +13,12 @@ const Booklist = () => {
 
     useEffect(() => {
         let fetchData = async () => {
-            let data = await axios.get('http://localhost:7000/getbooks');
-            setBooks(data.data);
+            await axios.get('http://localhost:7000/getbooks')
+                .then((data) => setBooks(data.data))
+                .catch(() => console.log("fetching error"))
         }
         fetchData();
     }, [books]);
-
-
 
     let readmore = (id) => {
         if (id) {
@@ -27,11 +26,12 @@ const Booklist = () => {
         }
     }
     let handleclick = (id, title) => {
-        // fetch(`http://localhost:3000/books/${id}`, {
-        //     method: 'DELETE'
-        // });
+        fetch(`http://localhost:7000/removebook/${id}`, {
+            method: 'DELETE'
+        });
         alert(`${title} will be deleted permanently`);
     }
+    
     let handleeditclick = (id, title) => {
         // fetch(`http://localhost:3000/books/${id}`, {
         //     method: 'DELETE'
@@ -44,8 +44,8 @@ const Booklist = () => {
                 <h1>Book List ({books.length})</h1>
                 <div className="section">
                     {
-                        books.map((data, index) =>
-                            <div className="bookcard" key={index}>
+                        books?.map((data, index) =>
+                            <div data-testid="bookcard" className="bookcard" key={index}>
                                 <div className="bookimage">
                                     <img src={data.thumbnailUrl} title={data.title} alt={data.title} />
                                 </div>

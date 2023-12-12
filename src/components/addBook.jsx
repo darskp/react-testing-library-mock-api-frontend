@@ -12,19 +12,35 @@ const Addbooks = () => {
     let [shortDescription, setShortDescription] = useState('');
     let [thumbnailUrl, setThumbnailUrl] = useState('');
 
-    let handlesubmit = e => {
-        e.preventDefault(); 
+    let handlesubmit = async e => {
+        e.preventDefault();
         let bookdata = { title, authors, categories, pageCount, shortDescription, thumbnailUrl };
-        console.log("Book data",bookdata)
-        alert("Book Data added succefully");
-        navigate('/book-list');
-    }
-    
-    const isEdit=false;
+        try {
+            const response = await fetch('http://localhost:7000/addbook/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(bookdata),
+            });
+            if (response?.data) {
+                console.log("Book data", bookdata);
+                alert("Book Data added successfully");
+                navigate('/book-list');
+            } else {
+                console.error('Failed to add book data');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    };
+
+
+    const isEdit = false;
     return (
         <div className='mainadd'>
             <div className="itemadd">
-                <h1 className='addtitle'>{isEdit ? 'Edit ' : 'Add ' } a Book</h1>
+                <h1 className='addtitle'>{isEdit ? 'Edit ' : 'Add '} a Book</h1>
                 <div className='container'>
                     <div className="form_image heropageright user-link">
                         <img src={hero} className="heroimg" alt="hero-img" />
