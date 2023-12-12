@@ -5,8 +5,7 @@ import remove from '../../src/images/remove32.png'
 import edit from '../../src/images/edit.png'
 import axios from "axios";
 
-const Booklist = () => {
-    let location = useLocation();
+const Booklist = ({ setIsedit }) => {
     let navigate = useNavigate();
     let [books, setBooks] = useState([]);
 
@@ -25,17 +24,18 @@ const Booklist = () => {
             navigate(`/books/${id}`);
         }
     }
-    let handleclick = (id, title) => {
-        fetch(`http://localhost:7000/removebook/${id}`, {
-            method: 'DELETE'
-        });
-        alert(`${title} will be deleted permanently`);
-    }
-    
+    let handleremoveClick = async (id, title) => {
+        try {
+            await axios.delete(`http://localhost:7000/removebook/${id}`);
+            alert(`${title} has been deleted permanently`);
+        } catch (error) {
+            console.error('Error deleting book:', error);
+        }
+    };
+
     let handleeditclick = (id, title) => {
-        // fetch(`http://localhost:3000/books/${id}`, {
-        //     method: 'DELETE'
-        // });
+        setIsedit(true)
+        navigate(`/editbook/${id}`)
     }
 
     return (
@@ -71,7 +71,7 @@ const Booklist = () => {
 
                                         </div>
                                         <div>
-                                            <button title="Delete" className="booklistremove booklistedit" onClick={() => handleclick(data.id, data.title)}><img src={remove} alt="delete book" /></button>
+                                            <button title="Delete" className="booklistremove booklistedit" onClick={() => handleremoveClick(data.id, data.title)}><img src={remove} alt="delete book" /></button>
                                         </div>
 
                                     </div>

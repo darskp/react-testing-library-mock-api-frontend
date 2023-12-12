@@ -4,7 +4,7 @@ import logo from '../../src/images/admin.png'
 const Navbar = () => {
     let lists = [
         {
-            "to": '/book',
+            "to": '/addbook',
             "name": 'Add Books'
         },
         {

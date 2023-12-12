@@ -1,9 +1,11 @@
 import '../styles/addbook.css';
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import hero from '../../src/images/hero1.png'
+import axios from 'axios';
 
-const Addbooks = () => {
+const Addbooks = ({ isEdit, setIsedit }) => {
+    let params = useParams();
     let navigate = useNavigate();
     let [title, setTitle] = useState('');
     let [authors, setAuthors] = useState('');
@@ -12,20 +14,18 @@ const Addbooks = () => {
     let [shortDescription, setShortDescription] = useState('');
     let [thumbnailUrl, setThumbnailUrl] = useState('');
 
-    let handlesubmit = async e => {
+    let handlesubmit = async (e) => {
         e.preventDefault();
         let bookdata = { title, authors, categories, pageCount, shortDescription, thumbnailUrl };
         try {
-            const response = await fetch('http://localhost:7000/addbook/', {
-                method: 'POST',
+            const response = await axios.post('http://localhost:7000/addbook/', bookdata, {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(bookdata),
             });
             if (response?.data) {
                 console.log("Book data", bookdata);
-                alert("Book Data added successfully");
+                alert(response.message);
                 navigate('/book-list');
             } else {
                 console.error('Failed to add book data');
@@ -36,7 +36,48 @@ const Addbooks = () => {
     };
 
 
-    const isEdit = false;
+    let handleUpdate = async (e) => {
+        e.preventDefault();
+        let bookdata = { title, authors, categories, pageCount, shortDescription, thumbnailUrl };
+        try {
+            const response = await axios.put(`http://localhost:7000/updatebook/${id}`, bookdata, {
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+            if (response?.data) {
+                console.log("Book data", bookdata);
+                alert(response.message);
+                setIsedit(false);
+                navigate('/book-list');
+            } else {
+                console.error('Failed to add book data');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    }
+
+    useEffect(() => {
+        let fetchData = async (id) => {
+            await axios.get(`http://localhost:7000/getbooks/${id}`)
+                .then((dat) => {
+                    let {data}=dat;
+                    setTitle(data.title)
+                    setAuthors(data.authors)
+                    setCategories(data.categories)
+                    setPageCount(data.pageCount)
+                    setShortDescription(data.shortDescription)
+                    setThumbnailUrl(data.thumbnailUrl)
+                })
+                .catch(() => console.log("fetching error"))
+        }
+        if(isEdit){
+            fetchData(params.id);
+        }
+    }, [isEdit]);
+
+
     return (
         <div className='mainadd'>
             <div className="itemadd">
@@ -46,7 +87,7 @@ const Addbooks = () => {
                         <img src={hero} className="heroimg" alt="hero-img" />
                     </div>
                     <div className="form">
-                        <form action="" onSubmit={handlesubmit}>
+                        <form onSubmit={!isEdit? handlesubmit : handleUpdate}>
                             <div className="title-add">
                                 <input value={title} onChange={e => setTitle(e.target.value)} required type="text" placeholder="Enter the title" />
                             </div>
