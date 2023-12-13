@@ -2,8 +2,9 @@ import { render, screen } from "@testing-library/react"
 import { MemoryRouter } from "react-router-dom"
 import Booklist from "./booklist"
 
-jest.mock('axios');
-
+jest.mock("axios", () => ({
+    __esModule: true,
+}));
 function renderComponent() {
   render(
     <MemoryRouter>
