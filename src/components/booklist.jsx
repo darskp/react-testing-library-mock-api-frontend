@@ -11,7 +11,9 @@ const Booklist = ({ setIsedit }) => {
 
     let fetchData = async () => {
         await axios.get('http://localhost:7000/getbooks')
-            .then((data) => setBooks(data.data))
+            .then((data) => {
+                setBooks(data.data)
+            })
             .catch(() => console.log("fetching error"))
     }
 

@@ -32,7 +32,7 @@ const Navbar = ({ setIsedit }) => {
                 </div>
                 <div className="linkgrp">
                     <ul>
-                        {lists.map((data, index) => <NavLink key={index} to={data.to} activeClassName="links active" className='links' alt={data.name}>{data.name}</NavLink>)}
+                        {lists.map((data, index) => <NavLink key={index} to={data.to} activeclassname="links active" className='links' alt={data.name}>{data.name}</NavLink>)}
                     </ul>
                 </div>
             </div>

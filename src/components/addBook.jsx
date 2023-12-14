@@ -17,51 +17,54 @@ const Addbooks = ({ isEdit, setIsedit }) => {
 
     let handlesubmit = async (e) => {
         e.preventDefault();
-        let bookdata = { title, authors, categories, pageCount, shortDescription, thumbnailUrl };
+        let formData = { title, authors, categories, pageCount, shortDescription, thumbnailUrl }
         try {
-            const response = await axios.post('http://localhost:7000/addbook/', bookdata, {
+            const response = await axios.post('http://localhost:7000/addbook/', formData, {
                 headers: {
                     "Content-Type": "application/json",
                     "Access-Control-Allow-Origin": "*",
+                    // "Authorization":123
                 },
             });
-            console.log("Book data", bookdata,response);
             if (response?.data) {
-                console.log("Book data", bookdata);
+                console.log("Book data", formData);
                 alert(response.data.message);
                 navigate('/books');
             } else {
                 console.error('Failed to add book data');
+                alert(response.message);
             }
-        } catch (error) {
-            console.error('Error:', error);
+        } catch(error){
+            if (error.response && error.response.status === 401) {
+                let res = await error.response;
+                alert(res.data.message);
+                console.log(res.data.message);
+            } else {
+                console.error('Error:', error);
+            }
         }
     };
 
 
     let handleUpdate = async (e) => {
         e.preventDefault();
-        let formData = new FormData();
-        formData.append("tittle", title);
-        formData.append("authors", authors);
-        formData.append("categories", categories);
-        formData.append("pageCount", pageCount);
-        formData.append("shortDescription", shortDescription);
-        formData.append("thumbnailUrl", thumbnailUrl);
+        let bookdata = { title, authors, categories, pageCount, shortDescription, thumbnailUrl };
         try {
-            const response = await axios.put(`http://localhost:7000/updatebook/${id}`, formData, {
+            const response = await axios.put(`http://localhost:7000/updatebook/${id}`, bookdata, {
                 headers: {
                     "Content-Type": "application/json",
                     "Access-Control-Allow-Origin": "*",
+                    // "Authorization": 123
                 },
             });
             if (response?.data) {
-                console.log("Book data", formData);
+                console.log("Book data", bookdata);
                 alert(response.data.message);
                 setIsedit(false);
                 navigate('/books');
             } else {
                 console.error('Failed to add book data');
+                console.log(response);
             }
         } catch (error) {
             console.error('Error:', error);
